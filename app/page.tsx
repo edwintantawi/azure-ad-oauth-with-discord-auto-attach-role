@@ -1,5 +1,6 @@
 import { getServerSession } from 'next-auth';
 import { SignInWithAzureAd } from '~/app/sign-in-with-azure-ad';
+import { ConnectWithDiscord } from '~/app/connect-with-discord';
 import { SignOut } from '~/app/sign-out';
 import { authOptions } from '~/lib/auth';
 
@@ -12,6 +13,7 @@ export default async function Home() {
         {session === null && <SignInWithAzureAd />}
         {session !== null && (
           <div>
+            <ConnectWithDiscord />
             <SignOut />
           </div>
         )}
