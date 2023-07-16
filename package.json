@@ -1,5 +1,5 @@
 {
-  "name": "auto-role",
+  "name": "azure-ad-oauth-with-discord-auto-attach-role",
   "version": "0.1.0",
   "private": true,
   "scripts": {
