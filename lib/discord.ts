@@ -24,7 +24,7 @@ class DiscordAPI {
       client_id: this.CLIENT_ID,
       redirect_uri: this.REDIRECT_URL,
       response_type: 'code',
-      scope: 'identify',
+      scope: ['identify', 'guilds.join'].join(' '),
     });
   }
 
@@ -47,7 +47,7 @@ class DiscordAPI {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to get discord access token`);
+      throw new Error('Failed to get discord access token');
     }
 
     const responseJson = await response.json();
@@ -67,7 +67,7 @@ class DiscordAPI {
     });
 
     if (response.status !== 204) {
-      throw new Error(`Failed to attach role to user`);
+      throw new Error('Failed to attach role to user');
     }
   }
 
@@ -83,7 +83,7 @@ class DiscordAPI {
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to get user profile`);
+      throw new Error('Failed to get user profile');
     }
 
     return response.json();
@@ -107,11 +107,44 @@ class DiscordAPI {
     }
 
     if (!response.ok) {
-      throw new Error(`Failed to get user profile`);
+      throw new Error('Failed to get user profile');
     }
 
     const responseJson = await response.json();
     return responseJson.user;
+  }
+
+  async addUserToGuild({
+    userId,
+    accessToken,
+    nickname,
+    roles = [],
+  }: {
+    userId: string;
+    accessToken: string;
+    nickname?: string;
+    roles: string[];
+  }) {
+    const endpoint = this.buildEndpoint(
+      `/guilds/${this.GUILD_ID}/members/${userId}`
+    );
+
+    const response = await fetch(endpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bot ${this.BOT_TOKEN}`,
+      },
+      body: JSON.stringify({
+        access_token: accessToken,
+        roles: roles,
+        nick: nickname,
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to add user to guild');
+    }
   }
 }
 
